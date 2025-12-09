@@ -1,0 +1,13 @@
+maxSurge:       25%
+maxUnavailable: 25%
+containerRepo: 221416552528.dkr.ecr.us-east-1.amazonaws.com/illuminati-django-backend
+buildVersion: 1.0.29
+cpuRequests: 100m
+memoryRequests: 128Mi
+cpuLimit: 200m
+memorylimit: 256Mi
+containerPort: 8000
+minReplicas: 1
+maxReplicas: 20
+cpuAverageUtilization: 70
+memoryAverageUtilization: 70

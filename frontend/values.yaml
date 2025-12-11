@@ -1,7 +1,7 @@
 maxSurge: 25%
 maxUnavailable: 25%
 containerRepo: 221416552528.dkr.ecr.us-east-1.amazonaws.com/illuminati-react-frontend
-buildVersion: 1.0.29
+buildVersion: 1.0.30
 cpuRequests: 100m
 memoryRequests: 128Mi
 cpuLimit: 200m

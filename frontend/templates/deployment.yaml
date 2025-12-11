@@ -2,24 +2,22 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: frontend
-  annotations:
-    deployment.kubernetes.io/revision: "1"
-  generation: 1
+  namespace: illuminati
   labels:
     run: frontend
-    name: frontend
-  namespace: illuminati
+  annotations:
+    deployment.kubernetes.io/revision: "1"
 spec:
-  progressDeadlineSeconds: 600
+  replicas: {{ .Values.replicas }}
   revisionHistoryLimit: 10
   selector:
     matchLabels:
       run: frontend
   strategy:
+    type: RollingUpdate
     rollingUpdate:
       maxSurge: {{ .Values.maxSurge }}
       maxUnavailable: {{ .Values.maxUnavailable }}
-    type: RollingUpdate
   template:
     metadata:
       labels:
@@ -27,7 +25,6 @@ spec:
         version: "1"
       annotations:
         consul.hashicorp.com/connect-inject: "true"
-      name: frontend
     spec:
       serviceAccountName: frontend
       imagePullSecrets:
@@ -35,6 +32,10 @@ spec:
       containers:
         - name: frontend
           image: {{ .Values.containerRepo }}:{{ .Values.buildVersion }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.containerPort }}
+              protocol: TCP
           resources:
             requests:
               cpu: {{ .Values.cpuRequests | quote }}
@@ -44,13 +45,9 @@ spec:
               memory: {{ .Values.memorylimit | quote }}
           livenessProbe:
             httpGet:
-              path: {{ .Values.healthPath }}
+              path: /healthz
               port: {{ .Values.containerPort }}
             initialDelaySeconds: 5
             timeoutSeconds: 1
             periodSeconds: 10
             failureThreshold: 3
-          ports:
-            - containerPort: {{ .Values.containerPort }}
-              name: http
-              protocol: TCP
